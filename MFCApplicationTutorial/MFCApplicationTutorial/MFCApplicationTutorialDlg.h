@@ -3,6 +3,8 @@
 //
 
 #pragma once
+#include "afxcmn.h"
+#include "afxwin.h"
 
 
 // CMFCApplicationTutorialDlg dialog
@@ -36,4 +38,16 @@ private:
 	int m_OkCount;
 public:
 	afx_msg void OnBnClickedBtnAdd();
+private:
+	CString m_VSliderEcho;
+public:
+	CSliderCtrl m_VSliderBar;
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+private:
+	CStatic m_HSliderEcho;
+public:
+	CSliderCtrl m_HSliderBar;
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+private:
+	CString m_HSliderBar1;
 };

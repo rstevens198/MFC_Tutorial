@@ -52,6 +52,8 @@ END_MESSAGE_MAP()
 CMFCApplicationTutorialDlg::CMFCApplicationTutorialDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_MFCAPPLICATIONTUTORIAL_DIALOG, pParent)
 	, m_EchoText(_T(""))
+	, m_VSliderEcho(_T(""))
+	, m_HSliderBar1(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -60,6 +62,11 @@ void CMFCApplicationTutorialDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_ECHO_AREA, m_EchoText);
+	DDX_Text(pDX, IDC_V_SLIDER_ECHO, m_VSliderEcho);
+	DDX_Control(pDX, IDC_V_SLIDER_BAR, m_VSliderBar);
+	DDX_Control(pDX, IDC_H_SLIDER_ECHO, m_HSliderEcho);
+	DDX_Control(pDX, IDC_H_SLIDER_BAR, m_HSliderBar);
+	DDX_Text(pDX, IDC_H_SLIDER_ECHO, m_HSliderBar1);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplicationTutorialDlg, CDialogEx)
@@ -67,6 +74,8 @@ BEGIN_MESSAGE_MAP(CMFCApplicationTutorialDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BTN_ADD, &CMFCApplicationTutorialDlg::OnBnClickedBtnAdd)
+	ON_WM_VSCROLL()
+	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 
@@ -104,6 +113,14 @@ BOOL CMFCApplicationTutorialDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 
 	m_OkCount = 0;
+
+	m_VSliderBar.SetRange(0, 100, TRUE);
+	m_VSliderBar.SetPos(0);
+	m_VSliderEcho.Format(_T("%d"), 0);
+
+	m_HSliderBar.SetRange(0, 100, TRUE);
+	m_HSliderBar.SetPos(0);
+	m_HSliderBar1.Format(_T("%d"), 0);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -166,4 +183,32 @@ void CMFCApplicationTutorialDlg::OnBnClickedBtnAdd()
 	m_EchoText.Format(_T("%d"), m_OkCount);
 	// without UpdateData() status area will _NOT_ be updated.
 	UpdateData(FALSE);
+}
+
+
+void CMFCApplicationTutorialDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: Add your message handler code here and/or call default
+	if (pScrollBar == (CScrollBar *)&m_VSliderBar)
+	{
+		int value = m_VSliderBar.GetPos();
+		m_VSliderEcho.Format(_T("%d"), value);
+		UpdateData(FALSE);
+	}
+	else 
+		CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+void CMFCApplicationTutorialDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: Add your message handler code here and/or call default
+	if (pScrollBar == (CScrollBar *)&m_HSliderBar)
+	{
+		int value = m_HSliderBar.GetPos();
+		m_HSliderBar1.Format(_T("%d"), value);
+		UpdateData(FALSE);
+	}
+	else 
+		CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
 }
