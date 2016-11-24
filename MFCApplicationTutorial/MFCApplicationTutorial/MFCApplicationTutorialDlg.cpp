@@ -54,6 +54,8 @@ CMFCApplicationTutorialDlg::CMFCApplicationTutorialDlg(CWnd* pParent /*=NULL*/)
 	, m_EchoText(_T(""))
 	, m_VSliderEcho(_T(""))
 	, m_HSliderBar1(_T(""))
+	, m_TimerEcho1(_T(""))
+	, m_MouseEcho(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -67,6 +69,8 @@ void CMFCApplicationTutorialDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_H_SLIDER_ECHO, m_HSliderEcho);
 	DDX_Control(pDX, IDC_H_SLIDER_BAR, m_HSliderBar);
 	DDX_Text(pDX, IDC_H_SLIDER_ECHO, m_HSliderBar1);
+	DDX_Text(pDX, IDC_TIMER_ECHO, m_TimerEcho1);
+	DDX_Text(pDX, IDC_MOUSE_ECHO1, m_MouseEcho);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplicationTutorialDlg, CDialogEx)
@@ -76,6 +80,10 @@ BEGIN_MESSAGE_MAP(CMFCApplicationTutorialDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_ADD, &CMFCApplicationTutorialDlg::OnBnClickedBtnAdd)
 	ON_WM_VSCROLL()
 	ON_WM_HSCROLL()
+	ON_WM_TIMER()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -121,6 +129,9 @@ BOOL CMFCApplicationTutorialDlg::OnInitDialog()
 	m_HSliderBar.SetRange(0, 100, TRUE);
 	m_HSliderBar.SetPos(0);
 	m_HSliderBar1.Format(_T("%d"), 0);
+
+	m_Seconds = 0;
+	SetTimer(0, 1000, NULL);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -211,4 +222,45 @@ void CMFCApplicationTutorialDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* 
 	}
 	else 
 		CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+
+
+void CMFCApplicationTutorialDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: Add your message handler code here and/or call default
+	m_Seconds++;
+	m_TimerEcho1.Format(_T("%d Seconds have passed"), m_Seconds);
+	UpdateData(FALSE);
+}
+
+
+void CMFCApplicationTutorialDlg::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	
+	CDialogEx::OnMouseMove(nFlags, point);
+	m_MouseEcho.Format(_T("Mouse Move at %d,%d"), point.x, point.y);
+	UpdateData(FALSE);
+}
+
+
+void CMFCApplicationTutorialDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+	m_MouseEcho.Format(_T("Left mouse down at %d,%d"), point.x, point.y);
+	UpdateData(FALSE);
+}
+
+
+void CMFCApplicationTutorialDlg::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CDialogEx::OnRButtonDown(nFlags, point);
+	m_MouseEcho.Format(_T("Right mouse down at %d,%d"), point.x, point.y);
+	UpdateData(FALSE);
 }

@@ -36,6 +36,7 @@ protected:
 private:
 	CString m_EchoText;
 	int m_OkCount;
+	int m_Seconds;
 public:
 	afx_msg void OnBnClickedBtnAdd();
 private:
@@ -50,4 +51,14 @@ public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 private:
 	CString m_HSliderBar1;
+public:
+	afx_msg void OnStnClickedTimerEcho3();
+private:
+	CString m_TimerEcho1;
+public:
+	CString m_MouseEcho;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 };
