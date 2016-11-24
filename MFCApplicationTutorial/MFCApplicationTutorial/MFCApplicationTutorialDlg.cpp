@@ -56,6 +56,8 @@ CMFCApplicationTutorialDlg::CMFCApplicationTutorialDlg(CWnd* pParent /*=NULL*/)
 	, m_HSliderBar1(_T(""))
 	, m_TimerEcho1(_T(""))
 	, m_MouseEcho(_T(""))
+	, m_TimerCtrlSliders(FALSE)
+	, m_TimerCtrlSliders1(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -69,8 +71,10 @@ void CMFCApplicationTutorialDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_H_SLIDER_ECHO, m_HSliderEcho);
 	DDX_Control(pDX, IDC_H_SLIDER_BAR, m_HSliderBar);
 	DDX_Text(pDX, IDC_H_SLIDER_ECHO, m_HSliderBar1);
-	DDX_Text(pDX, IDC_TIMER_ECHO, m_TimerEcho1);
+	/*DDX_Text(pDX, IDC_TIMER_ECHO, m_TimerEcho1);
 	DDX_Text(pDX, IDC_MOUSE_ECHO1, m_MouseEcho);
+	DDX_Check(pDX, IDC_TIMER_CONTROL_SLIDERS, m_TimerCtrlSliders);*/
+	DDX_Check(pDX, IDC_TIMER_CONTROL_SLIDERS, m_TimerCtrlSliders1);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplicationTutorialDlg, CDialogEx)
@@ -84,6 +88,8 @@ BEGIN_MESSAGE_MAP(CMFCApplicationTutorialDlg, CDialogEx)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
+	ON_BN_CLICKED(IDC_TIMER_CONTROL_SLIDERS, &CMFCApplicationTutorialDlg::OnBnClickedTimerControlSliders)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMFCApplicationTutorialDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -132,6 +138,9 @@ BOOL CMFCApplicationTutorialDlg::OnInitDialog()
 
 	m_Seconds = 0;
 	SetTimer(0, 1000, NULL);
+
+	m_TimerCtrlSliders1 = TRUE;
+	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -232,6 +241,28 @@ void CMFCApplicationTutorialDlg::OnTimer(UINT_PTR nIDEvent)
 	// TODO: Add your message handler code here and/or call default
 	m_Seconds++;
 	m_TimerEcho1.Format(_T("%d Seconds have passed"), m_Seconds);
+	if (m_TimerCtrlSliders1)
+	{
+		// Get ready to decrease the sliders ... 
+		int hvalue = m_HSliderBar.GetPos();
+		if (hvalue > 0)
+		{
+			m_HSliderBar.SetPos(hvalue - 1);
+			m_HSliderBar1.Format(_T("%d"), hvalue - 1);
+		}
+		// do the same for the vertical slider 
+		int vvalue = m_VSliderBar.GetPos();
+		if (vvalue > 0)
+		{
+			m_VSliderBar.SetPos(vvalue - 1);
+			m_VSliderEcho.Format(_T("%d"), vvalue - 1);
+		}
+		if ((hvalue == 0) && (vvalue == 0))
+		{
+			m_TimerCtrlSliders1 = FALSE;
+		}
+	}
+
 	UpdateData(FALSE);
 }
 
@@ -262,5 +293,24 @@ void CMFCApplicationTutorialDlg::OnRButtonDown(UINT nFlags, CPoint point)
 
 	CDialogEx::OnRButtonDown(nFlags, point);
 	m_MouseEcho.Format(_T("Right mouse down at %d,%d"), point.x, point.y);
+	UpdateData(FALSE);
+}
+
+
+void CMFCApplicationTutorialDlg::OnBnClickedTimerControlSliders()
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	// This will fill all UI-connected variables with whatever 
+	// value that is showing on the UI control objects.
+}
+
+
+void CMFCApplicationTutorialDlg::OnBnClickedButton2()
+{
+	// TODO: Add your control notification handler code here
+	m_OkCount = 0;
+	m_EchoText.Format(_T("%d"), m_OkCount);
+	// without UpdateData() status area will _NOT_ be updated.
 	UpdateData(FALSE);
 }
